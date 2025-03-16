@@ -44,7 +44,7 @@ def call(Map config) {
             stage('Update K8s Deployment') {
                 steps {
                     sh """
-                        sed -i 's|image: .*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|g' ${KUBE_DEPLOYMENT_FILE}
+                        sed -i 's|image:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|g' ${KUBE_DEPLOYMENT_FILE}
                     """
                 }
             }
@@ -54,15 +54,17 @@ def call(Map config) {
                     withCredentials([file(
                         credentialsId: config.k8sTokenCredentialsId,
                         variable: 'K8S_TOKEN'
-                    )]) script {
-                                sh """
-                kubectl config set-credentials jenkins-user --token=${K8S_TOKEN}
-                kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify
-                kubectl config set-context jenkins-context --cluster=my-cluster --user=jenkins-user
-                kubectl config use-context jenkins-context
-                kubectl apply -f Jenkins/Task-3/deployment.yaml
-            """
-                }
+                    )]) {
+                        script {
+                            sh """
+                                kubectl config set-credentials jenkins-user --token=\$(cat ${K8S_TOKEN})
+                                kubectl config set-cluster my-cluster --server=https://192.168.49.2:8443 --insecure-skip-tls-verify
+                                kubectl config set-context jenkins-context --cluster=my-cluster --user=jenkins-user
+                                kubectl config use-context jenkins-context
+                                kubectl apply -f ${KUBE_DEPLOYMENT_FILE}
+                            """
+                        }
+                    }
                 }
             }
         }
