@@ -1,4 +1,4 @@
-// vars/buildAndDeploy.groovy
+// vars/dockerKubePipeline.groovy
 def call(Map config) {
     pipeline {
         agent any
