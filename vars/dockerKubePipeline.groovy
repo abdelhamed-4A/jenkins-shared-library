@@ -51,13 +51,13 @@ def call(Map config) {
 
             stage('Deploy to Kubernetes') {
                 steps {
-                    withCredentials([file(
+                    withCredentials([string(
                         credentialsId: config.k8sTokenCredentialsId,
                         variable: 'K8S_TOKEN'
                     )]) {
                         script {
                             sh """
-                                kubectl config set-credentials jenkins-user --token=\$(cat ${K8S_TOKEN})
+                                kubectl config set-credentials jenkins-user --token=${K8S_TOKEN}
                                 kubectl config set-cluster my-cluster --server=https://192.168.49.2:8443 --insecure-skip-tls-verify
                                 kubectl config set-context jenkins-context --cluster=my-cluster --user=jenkins-user
                                 kubectl config use-context jenkins-context
