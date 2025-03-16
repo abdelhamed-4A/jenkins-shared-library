@@ -4,9 +4,9 @@ def call(Map config) {
         agent any
 
         environment {
-            DOCKER_IMAGE_NAME = config.dockerImageName
-            DOCKER_IMAGE_TAG  = config.dockerImageTag
-            KUBE_DEPLOYMENT_FILE = config.kubeDeploymentFile
+            DOCKER_IMAGE_NAME = "${config.dockerImageName}"
+            DOCKER_IMAGE_TAG  = "${config.dockerImageTag}" 
+            KUBE_DEPLOYMENT_FILE = "${config.kubeDeploymentFile}"
         }
 
         stages {
